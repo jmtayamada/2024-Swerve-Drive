@@ -108,7 +108,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
-    double angle = Math.atan2(m_DriveStick.getRawAxis(1), m_DriveStick.getRawAxis(0));
+    double angle = Math.atan2(m_DriveStick.getRawAxis(1), m_DriveStick.getRawAxis(0))*180/Math.PI;
     double speed = Math.sqrt(Math.pow(m_DriveStick.getRawAxis(1), 2) + Math.pow(m_DriveStick.getRawAxis(0), 2));
     m_swerveDrive.PIDTuningHelper(angle, speed);
   }

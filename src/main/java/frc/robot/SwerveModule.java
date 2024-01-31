@@ -101,6 +101,9 @@ public class SwerveModule {
     public void testModule(double angle, double speed) {
         m_drivingPIDController.setReference(speed, CANSparkMax.ControlType.kVelocity);
         m_turningSparkMax.set(m_turningPIDController.calculate(m_turningEncoder.getAbsolutePosition().getValueAsDouble()*360, angle));
+        SmartDashboard.putNumber("turning velocity", m_turningEncoder.getVelocity().getValueAsDouble());
+        SmartDashboard.putNumber("target angle", angle);
+        SmartDashboard.putNumber("current angle", m_turningEncoder.getAbsolutePosition().getValueAsDouble()*360);
     }
 
     public void tuneTurningP() {
@@ -108,6 +111,7 @@ public class SwerveModule {
             currentTime = 0;
             clock.reset();
             clock.start();
+            // make sure this direction is in the right direction, will not work if it's in the wrong direction
             startingDirection = -1;
             turning = true;
         }
