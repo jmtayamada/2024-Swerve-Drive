@@ -11,7 +11,11 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
+
 import frc.robot.Constants.ModuleConstants;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import java.util.Random;
 
 
 public class SwerveModule {
@@ -23,6 +27,12 @@ public class SwerveModule {
 
     private final SparkPIDController m_drivingPIDController;
     private final PIDController m_turningPIDController;
+
+    private final Timer clock;
+    private boolean turning = false;
+    private double currentTime = 0;
+    private double startingDirection = 0;
+    private Random rand = new Random();
 
     // private SwerveModuleState m_desiredState = new SwerveModuleState(0.0, new Rotation2d());
 
@@ -65,6 +75,8 @@ public class SwerveModule {
         m_turningSparkMax.burnFlash();
        
         m_drivingEncoder.setPosition(0);
+
+        clock = new Timer();
     }
 
     public SwerveModuleState getState() {
@@ -82,12 +94,41 @@ public class SwerveModule {
         m_turningSparkMax.set(m_turningPIDController.calculate(m_turningEncoder.getAbsolutePosition().getValueAsDouble()*360, optimizedDesiredState.angle.getDegrees()));
     }
 
-    public void testMotors(double velocity, double angle) {
-        m_drivingPIDController.setReference(velocity, CANSparkMax.ControlType.kVelocity);
+    public void resetEncoders() {
+        m_drivingEncoder.setPosition(0);
+    }
+
+    public void testModule(double angle, double speed) {
+        m_drivingPIDController.setReference(speed, CANSparkMax.ControlType.kVelocity);
         m_turningSparkMax.set(m_turningPIDController.calculate(m_turningEncoder.getAbsolutePosition().getValueAsDouble()*360, angle));
     }
 
-    public void resetEncoders() {
-        m_drivingEncoder.setPosition(0);
+    public void tuneTurningP() {
+        if(!turning) {
+            currentTime = 0;
+            clock.reset();
+            clock.start();
+            startingDirection = -1;
+            turning = true;
+        }
+        if(turning) {
+            resetEncoders();
+            testModule(rand.nextDouble(0, 180), 0);
+            // check if velocity changed direction
+            if(m_turningEncoder.getVelocity().getValueAsDouble() > startingDirection) {
+                m_drivingPIDController.setP(m_drivingPIDController.getP()/2);
+                turning = false;
+            }
+            // check time it took to get to set point
+            if(m_turningPIDController.atSetpoint()) {
+                currentTime = clock.get();
+                clock.stop();
+                if(currentTime > .5) {
+                    m_drivingPIDController.setP(m_drivingPIDController.getP()*2);
+                    turning = false;
+                }
+            }
+            SmartDashboard.putNumber("Current P value", m_drivingPIDController.getP());
+        }
     }
 }

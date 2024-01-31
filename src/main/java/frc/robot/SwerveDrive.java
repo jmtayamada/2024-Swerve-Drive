@@ -64,4 +64,8 @@ public class SwerveDrive {
         SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
         setModuleStates(moduleStates);
     }
+
+    public void PIDTuningHelper(double angle, double speed) {
+        m_FLSwerve.testModule(angle, speed);
+    }
 }
