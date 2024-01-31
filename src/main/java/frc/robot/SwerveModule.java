@@ -8,7 +8,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkLowLevel.MotorType;
-import com.ctre.phoenix.sensors.CANCoder;
+import com.ctre.phoenix6.hardware.CANcoder;
 import frc.robot.Constants.ModuleConstants;
 
 
@@ -17,7 +17,7 @@ public class SwerveModule {
     private final CANSparkMax m_turningSparkMax;
 
     private final RelativeEncoder m_drivingEncoder;
-    private final CANCoder m_turningEncoder;
+    private final CANcoder m_turningEncoder;
 
     private final SparkPIDController m_drivingPIDController;
     private final PIDController m_turningPIDController;
@@ -32,7 +32,7 @@ public class SwerveModule {
         m_turningSparkMax.restoreFactoryDefaults();
 
         m_drivingEncoder = m_drivingSparkMax.getEncoder();
-        m_turningEncoder = new CANCoder(encoderNum);
+        m_turningEncoder = new CANcoder(encoderNum);
 
         m_turningPIDController = new PIDController(ModuleConstants.kTurningP, ModuleConstants.kTurningI, ModuleConstants.kTurningD);
         m_drivingPIDController = m_drivingSparkMax.getPIDController();
@@ -61,23 +61,23 @@ public class SwerveModule {
     }
 
     public SwerveModuleState getState() {
-        return new SwerveModuleState(m_drivingEncoder.getVelocity(), new Rotation2d(m_turningEncoder.getAbsolutePosition()));
+        return new SwerveModuleState(m_drivingEncoder.getVelocity(), new Rotation2d(m_turningEncoder.getAbsolutePosition().getValue()));
     }
 
     public SwerveModulePosition getPosition() {
-        return new SwerveModulePosition(m_drivingEncoder.getPosition(), new Rotation2d(m_turningEncoder.getAbsolutePosition()));
+        return new SwerveModulePosition(m_drivingEncoder.getPosition(), new Rotation2d(m_turningEncoder.getAbsolutePosition().getValue()));
     }
 
     public void setDesiredState(SwerveModuleState desiredState) {
-        SwerveModuleState optimizedDesiredState = SwerveModuleState.optimize(desiredState, new Rotation2d(m_turningEncoder.getAbsolutePosition() * Math.PI / 180));
+        SwerveModuleState optimizedDesiredState = SwerveModuleState.optimize(desiredState, new Rotation2d(m_turningEncoder.getAbsolutePosition().getValue() * Math.PI / 180));
 
         m_drivingPIDController.setReference(optimizedDesiredState.speedMetersPerSecond, ControlType.kVelocity);
-        m_turningSparkMax.set(m_turningPIDController.calculate(m_turningEncoder.getAbsolutePosition(), optimizedDesiredState.angle.getDegrees()));
+        m_turningSparkMax.set(m_turningPIDController.calculate(m_turningEncoder.getAbsolutePosition().getValue(), optimizedDesiredState.angle.getDegrees()));
     }
 
     public void testMotors(double velocity, double angle) {
         m_drivingPIDController.setReference(velocity, CANSparkMax.ControlType.kVelocity);
-        m_turningSparkMax.set(m_turningPIDController.calculate(m_turningEncoder.getAbsolutePosition(), angle));
+        m_turningSparkMax.set(m_turningPIDController.calculate(m_turningEncoder.getAbsolutePosition().getValue(), angle));
     }
 
     public void resetEncoders() {
