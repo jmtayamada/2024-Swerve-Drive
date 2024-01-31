@@ -104,7 +104,7 @@ public final class Constants {
     public static double kDrivingMaxOutput = 1;
 
 
-    public static double kTurningP = 0.04;
+    public static double kTurningP = 0.0027;
     public static double kTurningI = 0;
     public static double kTurningD = 0;
     public static double kTurningFF = 0;
