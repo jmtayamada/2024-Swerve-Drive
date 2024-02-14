@@ -27,16 +27,23 @@ public final class Constants {
   }
   public static class ControllerConstants {
     public static int kDrivingJoystickPort = 0;
-    public static int kHelperJoystickPort = 1;
+    public static int kDrivingJoystickX = 1;
+    public static int kDrivingJoystickY = 0;
+    public static int kDrivingJoystickZ = 2;
+    public static double kDrivingSpeed = 0.5;
+    public static double kSteerSpeed = 1;
+    public static double kSteerDeadzone = 0.1;
+    public static double kDriveDeadzone = 0.1;
+    public static int kHelperJoystickPort = 2;
   }
   public static class DriveConstants {
     public static double kMaxSpeedMetersPerSecond = 4.8;
 
 
     // Chassis configuration
-    public static double kTrackWidth = Units.inchesToMeters(26.5);
+    public static double kTrackWidth = Units.inchesToMeters(21.25);
     // Distance between centers of right and left wheels
-    public static double kWheelBase = Units.inchesToMeters(26.5);
+    public static double kWheelBase = Units.inchesToMeters(33.875);
     // Distance between front and back wheels on robot
     public static SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
       new Translation2d(kWheelBase / 2, kTrackWidth / 2),
@@ -47,22 +54,24 @@ public final class Constants {
 
 
     // SPARK MAX CAN IDs
-    public static int kFrontLeftDrivingCanId = 11;
-    public static int kRearLeftDrivingCanId = 13;
-    public static int kFrontRightDrivingCanId = 15;
-    public static int kRearRightDrivingCanId = 17;
+    public static int kFrontLeftDrivingCanId = 6;
+    public static int kRearLeftDrivingCanId = 4;
+    public static int kFrontRightDrivingCanId = 8;
+    public static int kRearRightDrivingCanId = 2;
 
 
-    public static int kFrontLeftTurningCanId = 10;
-    public static int kRearLeftTurningCanId = 12;
-    public static int kFrontRightTurningCanId = 14;
-    public static int kRearRightTurningCanId = 16;
+    public static int kFrontLeftTurningCanId = 5;
+    public static int kRearLeftTurningCanId = 3;
+    public static int kFrontRightTurningCanId = 7;  
+    public static int kRearRightTurningCanId = 1;
 
 
-    public static int kFrontLeftEncoderCanId = 17;
-    public static int kRearLeftEncoderCanId = 18;
-    public static int kFrontRightEncoderCanId = 19;
-    public static int kRearRightEncoderCanId = 20;
+    public static int kFrontLeftEncoderCanId = 13; 
+    public static int kRearLeftEncoderCanId = 10;
+    public static int kFrontRightEncoderCanId = 12;
+    public static int kRearRightEncoderCanId = 11; 
+
+    public static int kPigeonGyro = 14;
 
 
     public static boolean kGyroReversed = false;
@@ -71,6 +80,18 @@ public final class Constants {
 
   public static class ModuleConstants {
     public static double kFreeSpeedRpm = 5676;
+
+    public static boolean FL_driveInverted = true;
+    public static boolean FL_steerInverted = false;
+
+    public static boolean FR_driveInverted = false;
+    public static boolean FR_steerInverted = false;
+
+    public static boolean RL_driveInverted = false;
+    public static boolean RL_steerInverted = false;
+
+    public static boolean RR_driveInverted = false;
+    public static boolean RR_steerInverted = false;
 
 
     public static double kDrivingMotorPinionTeeth = 14;
@@ -95,19 +116,21 @@ public final class Constants {
     public static double kTurningEncoderPositionPIDMinInput = 0.0;
     public static double kTurningEncoderPositionPIDMaxInput = 360.0;
 
+    public static double kDeadzone = 0.2;
 
-    public static double kDrivingP = 0.04;
+
+    public static double kDrivingP = 0.001;
     public static double kDrivingI = 0;
     public static double kDrivingD = 0;
-    public static double kDrivingFF = 1/kDriveWheelFreeSpeedRps;
+    public static double kDrivingFF = 0; //1/kDriveWheelFreeSpeedRps;
     public static double kDrivingMinOutput = -1;
     public static double kDrivingMaxOutput = 1;
 
 
-    public static double kTurningP = 0.0027;
+    public static double kTurningP = 0.008;
     public static double kTurningI = 0;
     public static double kTurningD = 0;
-    public static double kTurningFF = 0;
+    //public static double kTurningFF = 0.1;
     public static double kTurningMinOutput = -1;
     public static double kTurningMaxOutput = 1;
 
@@ -117,7 +140,7 @@ public final class Constants {
 
 
     public static int kDrivingMotorCurrentLimit = 50; // amps
-    public static int kTurningMotorCurrentLimit = 20;
+    public static int kTurningMotorCurrentLimit = 10;
   }
 }
 
